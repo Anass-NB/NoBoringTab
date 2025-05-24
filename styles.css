@@ -1,33 +1,33 @@
 :root {
-  --bg-gradient: linear-gradient(135deg, #000000 0%, #B6B09F 100%);
-  --text-color: #F2F2F2;
-  --widget-bg: rgba(0, 0, 0, 0.8);
-  --header-bg: rgba(0, 0, 0, 0.8);
-  --primary-color: #EAE4D5;
-  --primary-hover: #B6B09F;
-  --border-color: #B6B09F;
+  --bg-gradient: linear-gradient(135deg, #000000 0%, #273F4F 100%);
+  --text-color: #EFEEEA;
+  --widget-bg: rgba(39, 63, 79, 0.8);
+  --header-bg: rgba(39, 63, 79, 0.8);
+  --primary-color: #FE7743;
+  --primary-hover: #FF8C5A;
+  --border-color: #FE7743;
   --widget-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --input-bg: #000000;
-  --stat-bg: #000000;
-  --secondary-text: #B6B09F;
-  --completed-text: #B6B09F;
-  --light-text: #B6B09F;
+  --input-bg: #273F4F;
+  --stat-bg: #273F4F;
+  --secondary-text: #EFEEEA;
+  --completed-text: #9BABB8;
+  --light-text: #EFEEEA;
 }
 
 body.dark-mode {
   --bg-gradient: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-  --text-color: #F2F2F2;
+  --text-color: #EFEEEA;
   --widget-bg: rgba(0, 0, 0, 0.8);
   --header-bg: rgba(0, 0, 0, 0.8);
-  --primary-color: #EAE4D5;
-  --primary-hover: #B6B09F;
-  --border-color: #B6B09F;
+  --primary-color: #FE7743;
+  --primary-hover: #FF8C5A;
+  --border-color: #FE7743;
   --widget-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   --input-bg: #000000;
   --stat-bg: #000000;
-  --secondary-text: #B6B09F;
-  --completed-text: #B6B09F;
-  --light-text: #B6B09F;
+  --secondary-text: #EFEEEA;
+  --completed-text: #9BABB8;
+  --light-text: #EFEEEA;
 }
 
 * {
@@ -127,11 +127,11 @@ h1 {
 #current-time {
   font-size: 24px;
   font-weight: bold;
-  color: #6a5acd;
+  color: #FE7743;
 }
 
 #current-date {
-  color: #666;
+  color: #EFEEEA;
 }
 
 .dashboard {
@@ -368,7 +368,7 @@ h1 {
   border-radius: 5px;
   margin-top: 10px;
   border: 1px solid var(--border-color);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #000000 0%, #273F4F 100%);
 }
 
 #settings-btn {
@@ -421,6 +421,212 @@ body.gradient-bg {
   background: var(--custom-gradient);
 }
 
+/* Pomodoro Timer Widget */
+#pomodoro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+#pomodoro-timer {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 10px 0;
+}
+
+#pomodoro-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.pomodoro-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pomodoro-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+#pomodoro-settings {
+  width: 100%;
+  border-top: 1px solid var(--border-color);
+  padding-top: 15px;
+  margin-top: 10px;
+}
+
+.pomodoro-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+.pomodoro-option input[type="number"] {
+  width: 60px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+/* Custom Playlist Styles */
+#genre-selector {
+  margin-top: 15px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 15px;
+}
+
+#genre-selector h3 {
+  margin-bottom: 10px;
+  color: var(--primary-color);
+  font-size: 16px;
+}
+
+.genre-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.genre-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 14px;
+}
+
+.genre-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Blog Sources Styles */
+#blog-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.source-btn {
+  background-color: var(--stat-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 15px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 14px;
+}
+
+.source-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.source-btn:hover:not(.active) {
+  background-color: var(--input-bg);
+}
+
+#refresh-blogs {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--primary-color);
+  margin-right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#blog-source {
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Theme Scheduler Styles */
+#theme-customizer {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: var(--widget-bg);
+  border-radius: 10px;
+  box-shadow: var(--widget-shadow);
+}
+
+#theme-customizer h3 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.theme-option {
+  margin-bottom: 12px;
+}
+
+.theme-option input[type="radio"] {
+  margin-right: 8px;
+}
+
+#schedule-options {
+  margin-top: 10px;
+  margin-left: 25px;
+  padding: 10px;
+  border-left: 2px solid var(--primary-color);
+}
+
+.schedule-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+.schedule-option input[type="time"] {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+/* Status for Pomodoro */
+.pomodoro-status {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.status-work {
+  background-color: rgba(254, 119, 67, 0.2);
+  color: var(--primary-color);
+}
+
+.status-break {
+  background-color: rgba(39, 63, 79, 0.3);
+  color: var(--text-color);
+}
 body.image-bg::before {
   content: '';
   position: fixed;

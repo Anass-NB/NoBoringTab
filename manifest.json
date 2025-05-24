@@ -3,7 +3,7 @@
   "name": "NoBoringTab",
   "version": "1.0",
   "description": "Turn every new tab into motivation.",
-  "permissions": ["storage", "tabs", "alarms"],
+  "permissions": ["storage", "tabs", "alarms", "notifications"],
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },

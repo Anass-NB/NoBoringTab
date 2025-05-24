@@ -13,6 +13,36 @@
     <button id="close-settings"><i class="fas fa-times"></i></button>
     <h2>Settings</h2>
     
+    <div id="theme-customizer">
+      <h3>Theme Settings</h3>
+      <div class="theme-option">
+        <input type="radio" id="theme-light" name="theme-type" value="light">
+        <label for="theme-light">Light Mode</label>
+      </div>
+      <div class="theme-option">
+        <input type="radio" id="theme-dark" name="theme-type" value="dark">
+        <label for="theme-dark">Dark Mode</label>
+      </div>
+      <div class="theme-option">
+        <input type="radio" id="theme-auto" name="theme-type" value="auto" checked>
+        <label for="theme-auto">Auto (System Default)</label>
+      </div>
+      <div class="theme-option">
+        <input type="radio" id="theme-scheduled" name="theme-type" value="scheduled">
+        <label for="theme-scheduled">Scheduled</label>
+        <div id="schedule-options" class="hidden">
+          <div class="schedule-option">
+            <label for="dark-mode-start">Dark mode starts at:</label>
+            <input type="time" id="dark-mode-start" value="20:00">
+          </div>
+          <div class="schedule-option">
+            <label for="dark-mode-end">Dark mode ends at:</label>
+            <input type="time" id="dark-mode-end" value="07:00">
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div id="bg-customizer">
       <h3>Background Settings</h3>
       <div class="bg-option">
@@ -24,7 +54,7 @@
         <label for="bg-gradient">Custom Gradient</label>
         <div id="gradient-options" class="hidden">
           <input type="color" id="gradient-color1" value="#000000">
-          <input type="color" id="gradient-color2" value="#B6B09F">
+          <input type="color" id="gradient-color2" value="#273F4F">
           <div id="custom-bg-preview"></div>
         </div>
       </div>
@@ -108,6 +138,15 @@
           <input type="text" id="spotify-url-input" placeholder="Enter Spotify playlist URL...">
           <button id="spotify-save-btn">Save Playlist</button>
         </div>
+        <div id="genre-selector">
+          <h3>Quick Genre Selection</h3>
+          <div class="genre-buttons">
+            <button class="genre-btn" data-playlist="37i9dQZF1DX8NTLI2TtZa6">Lo-Fi</button>
+            <button class="genre-btn" data-playlist="37i9dQZF1DWWEJlAGA9gs0">Classical</button>
+            <button class="genre-btn" data-playlist="37i9dQZF1DX0MLFaUdXnjA">Chill</button>
+            <button class="genre-btn" data-playlist="37i9dQZF1DX4sWSpwq3LiO">Jazz</button>
+          </div>
+        </div>
       </div>
 
       <div class="widget" id="stats-widget">
@@ -132,6 +171,36 @@
         </div>
       </div>
 
+      <div class="widget" id="pomodoro-widget">
+        <h2>Focus Timer</h2>
+        <div id="pomodoro-container">
+          <div id="pomodoro-timer">25:00</div>
+          <div id="pomodoro-controls">
+            <button id="pomodoro-start" class="pomodoro-btn"><i class="fas fa-play"></i> Start</button>
+            <button id="pomodoro-pause" class="pomodoro-btn hidden"><i class="fas fa-pause"></i> Pause</button>
+            <button id="pomodoro-reset" class="pomodoro-btn"><i class="fas fa-redo"></i> Reset</button>
+          </div>
+          <div id="pomodoro-settings">
+            <div class="pomodoro-option">
+              <label for="pomodoro-work-time">Work (minutes):</label>
+              <input type="number" id="pomodoro-work-time" min="1" max="60" value="25">
+            </div>
+            <div class="pomodoro-option">
+              <label for="pomodoro-break-time">Break (minutes):</label>
+              <input type="number" id="pomodoro-break-time" min="1" max="30" value="5">
+            </div>
+            <div class="pomodoro-option">
+              <input type="checkbox" id="pomodoro-notifications" checked>
+              <label for="pomodoro-notifications">Enable notifications</label>
+            </div>
+            <div class="pomodoro-option">
+              <input type="checkbox" id="pomodoro-tab-title" checked>
+              <label for="pomodoro-tab-title">Show timer in tab title</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="widget" id="agenda-widget">
         <h2>Today's Agenda</h2>
         <ul id="agenda-list"></ul>
@@ -146,12 +215,26 @@
       
       <div class="widget" id="blogs-widget">
         <h2>Recommended Blogs</h2>
+        <div id="blog-sources">
+          <button class="source-btn active" data-source="all">All</button>
+          <button class="source-btn" data-source="medium">Medium</button>
+          <button class="source-btn" data-source="dev">Dev.to</button>
+          <button class="source-btn" data-source="hashnode">Hashnode</button>
+          <button class="source-btn" data-source="custom">My Blogs</button>
+        </div>
         <ul id="blog-list"></ul>
+        <button id="refresh-blogs"><i class="fas fa-sync-alt"></i> Refresh</button>
         <button id="add-blog"><i class="fas fa-plus"></i> Add Blog</button>
         <div id="blog-form" class="hidden">
           <input type="text" id="blog-title" placeholder="Blog title">
           <input type="text" id="blog-url" placeholder="Blog URL">
           <input type="text" id="blog-category" placeholder="Category (optional)">
+          <select id="blog-source">
+            <option value="custom">Custom</option>
+            <option value="medium">Medium</option>
+            <option value="dev">Dev.to</option>
+            <option value="hashnode">Hashnode</option>
+          </select>
           <button id="save-blog">Add</button>
           <button id="cancel-blog">Cancel</button>
         </div>

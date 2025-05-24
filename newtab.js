@@ -42,6 +42,17 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize stats
   loadStats();
+  // Initialize pomodoro timer
+  initializePomodoro();
+  
+  // Initialize genre selection
+  initializeGenreSelection();
+  
+  // Initialize blog sources
+  initializeBlogSources();
+  
+  // Initialize theme scheduler
+  initializeThemeScheduler();
 });
 
 // Theme and Background Functions
@@ -409,6 +420,647 @@ function updateUpcomingDates(todos) {
 
 function showTodoForm() {
   document.getElementById('todo-form').classList.remove('hidden');
+// Pomodoro Timer Functions
+function initializePomodoro() {
+  const startBtn = document.getElementById('pomodoro-start');
+  const pauseBtn = document.getElementById('pomodoro-pause');
+  const resetBtn = document.getElementById('pomodoro-reset');
+  const workTimeInput = document.getElementById('pomodoro-work-time');
+  const breakTimeInput = document.getElementById('pomodoro-break-time');
+  const notificationsCheckbox = document.getElementById('pomodoro-notifications');
+  const tabTitleCheckbox = document.getElementById('pomodoro-tab-title');
+  
+  // Load saved settings
+  chrome.storage.sync.get(['pomodoroSettings'], function(result) {
+    if (result.pomodoroSettings) {
+      const settings = result.pomodoroSettings;
+      workTimeInput.value = settings.workTime || 25;
+      breakTimeInput.value = settings.breakTime || 5;
+      notificationsCheckbox.checked = settings.notifications !== undefined ? settings.notifications : true;
+      tabTitleCheckbox.checked = settings.tabTitle !== undefined ? settings.tabTitle : true;
+    }
+  });
+  
+  // Save settings when changed
+  [workTimeInput, breakTimeInput, notificationsCheckbox, tabTitleCheckbox].forEach(element => {
+    element.addEventListener('change', savePomodoroSettings);
+  });
+  
+  // Button event listeners
+  startBtn.addEventListener('click', startPomodoro);
+  pauseBtn.addEventListener('click', pausePomodoro);
+  resetBtn.addEventListener('click', resetPomodoro);
+  
+  // Add status display
+  const pomodoroContainer = document.getElementById('pomodoro-container');
+  const statusElement = document.createElement('div');
+  statusElement.id = 'pomodoro-status';
+  statusElement.className = 'pomodoro-status hidden';
+  pomodoroContainer.appendChild(statusElement);
+}
+
+let pomodoroTimer;
+let pomodoroTimeLeft = 25 * 60; // 25 minutes in seconds
+let pomodoroIsActive = false;
+let pomodoroIsBreak = false;
+let originalTitle = document.title;
+
+function startPomodoro() {
+  if (pomodoroIsActive) return;
+  
+  const startBtn = document.getElementById('pomodoro-start');
+  const pauseBtn = document.getElementById('pomodoro-pause');
+  const statusElement = document.getElementById('pomodoro-status');
+  
+  startBtn.classList.add('hidden');
+  pauseBtn.classList.remove('hidden');
+  
+  if (!pomodoroIsBreak) {
+    statusElement.textContent = 'Working...';
+    statusElement.className = 'pomodoro-status status-work';
+  } else {
+    statusElement.textContent = 'Break time!';
+    statusElement.className = 'pomodoro-status status-break';
+  }
+  statusElement.classList.remove('hidden');
+  
+  pomodoroIsActive = true;
+  
+  pomodoroTimer = setInterval(function() {
+    pomodoroTimeLeft--;
+    updatePomodoroDisplay();
+    
+    if (pomodoroTimeLeft <= 0) {
+      clearInterval(pomodoroTimer);
+      pomodoroIsActive = false;
+      
+      const notificationsEnabled = document.getElementById('pomodoro-notifications').checked;
+      
+      if (notificationsEnabled) {
+        if (Notification.permission === "granted") {
+          showPomodoroNotification();
+        } else if (Notification.permission !== "denied") {
+          Notification.requestPermission().then(function(permission) {
+            if (permission === "granted") {
+              showPomodoroNotification();
+            }
+          });
+        }
+      }
+      
+      // Switch between work and break
+      pomodoroIsBreak = !pomodoroIsBreak;
+      
+      if (pomodoroIsBreak) {
+        const breakTime = parseInt(document.getElementById('pomodoro-break-time').value);
+        pomodoroTimeLeft = breakTime * 60;
+        statusElement.textContent = 'Break time!';
+        statusElement.className = 'pomodoro-status status-break';
+      } else {
+        const workTime = parseInt(document.getElementById('pomodoro-work-time').value);
+        pomodoroTimeLeft = workTime * 60;
+        statusElement.textContent = 'Working...';
+        statusElement.className = 'pomodoro-status status-work';
+      }
+      
+      updatePomodoroDisplay();
+      startPomodoro(); // Auto-start the next interval
+    }
+  }, 1000);
+}
+
+function pausePomodoro() {
+  if (!pomodoroIsActive) return;
+  
+  const startBtn = document.getElementById('pomodoro-start');
+  const pauseBtn = document.getElementById('pomodoro-pause');
+  
+  clearInterval(pomodoroTimer);
+  pomodoroIsActive = false;
+  
+  startBtn.classList.remove('hidden');
+  pauseBtn.classList.add('hidden');
+}
+
+function resetPomodoro() {
+  clearInterval(pomodoroTimer);
+  pomodoroIsActive = false;
+  pomodoroIsBreak = false;
+  
+  const workTime = parseInt(document.getElementById('pomodoro-work-time').value);
+  pomodoroTimeLeft = workTime * 60;
+  
+  const startBtn = document.getElementById('pomodoro-start');
+  const pauseBtn = document.getElementById('pomodoro-pause');
+  const statusElement = document.getElementById('pomodoro-status');
+  
+  startBtn.classList.remove('hidden');
+  pauseBtn.classList.add('hidden');
+  statusElement.classList.add('hidden');
+  
+  updatePomodoroDisplay();
+  document.title = originalTitle;
+}
+
+function updatePomodoroDisplay() {
+  const minutes = Math.floor(pomodoroTimeLeft / 60);
+  const seconds = pomodoroTimeLeft % 60;
+  const displayTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  
+  document.getElementById('pomodoro-timer').textContent = displayTime;
+  
+  // Update tab title if enabled
+  const tabTitleEnabled = document.getElementById('pomodoro-tab-title').checked;
+  if (tabTitleEnabled) {
+    const status = pomodoroIsBreak ? 'Break' : 'Focus';
+    document.title = `(${displayTime} - ${status}) NoBoringTab`;
+  } else if (document.title !== originalTitle) {
+    document.title = originalTitle;
+  }
+}
+
+function showPomodoroNotification() {
+  const title = pomodoroIsBreak ? 'Time to get back to work!' : 'Time for a break!';
+  const body = pomodoroIsBreak 
+    ? 'Your break is over. Let\'s get back to being productive!' 
+    : 'Good job! Take a short break before continuing.';
+  
+  const notification = new Notification(title, {
+    body: body,
+    icon: '/icons/icon128.png'
+  });
+  
+  notification.onclick = function() {
+    window.focus();
+    this.close();
+  };
+}
+
+function savePomodoroSettings() {
+  const settings = {
+    workTime: parseInt(document.getElementById('pomodoro-work-time').value),
+    breakTime: parseInt(document.getElementById('pomodoro-break-time').value),
+    notifications: document.getElementById('pomodoro-notifications').checked,
+    tabTitle: document.getElementById('pomodoro-tab-title').checked
+  };
+  
+  chrome.storage.sync.set({ pomodoroSettings: settings });
+  
+  // If timer is not active, update the time left based on new settings
+  if (!pomodoroIsActive) {
+    if (!pomodoroIsBreak) {
+      pomodoroTimeLeft = settings.workTime * 60;
+    } else {
+      pomodoroTimeLeft = settings.breakTime * 60;
+    }
+    updatePomodoroDisplay();
+  }
+}
+
+// Custom Playlists Functions
+function initializeGenreSelection() {
+  const genreButtons = document.querySelectorAll('.genre-btn');
+  
+  genreButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const playlistId = this.getAttribute('data-playlist');
+      const spotifyEmbed = document.getElementById('spotify-playlist');
+      spotifyEmbed.src = `https://open.spotify.com/embed/playlist/${playlistId}`;
+      
+      // Save the selected playlist
+      chrome.storage.sync.set({ 
+        spotifyPlaylist: playlistId,
+        spotifyType: 'genre'
+      });
+    });
+  });
+}
+
+// Blog Sources Functions
+function initializeBlogSources() {
+  const sourceButtons = document.querySelectorAll('.source-btn');
+  const refreshButton = document.getElementById('refresh-blogs');
+  
+  // Load blogs from different sources
+  loadBlogsFromAllSources();
+  
+  sourceButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      // Remove active class from all buttons
+      sourceButtons.forEach(btn => btn.classList.remove('active'));
+      
+      // Add active class to the clicked button
+      this.classList.add('active');
+      
+      // Filter blogs by source
+      const source = this.getAttribute('data-source');
+      filterBlogsBySource(source);
+    });
+  });
+  
+  refreshButton.addEventListener('click', loadBlogsFromAllSources);
+  
+  // Update the blog form to include source selection
+  document.getElementById('save-blog').addEventListener('click', function() {
+    const title = document.getElementById('blog-title').value.trim();
+    const url = document.getElementById('blog-url').value.trim();
+    const category = document.getElementById('blog-category').value.trim();
+    const source = document.getElementById('blog-source').value;
+    
+    if (title && url) {
+      // Load existing blogs
+      chrome.storage.sync.get(['blogs'], function(result) {
+        const blogs = result.blogs || [];
+        
+        // Add new blog
+        blogs.push({
+          title: title,
+          url: url,
+          category: category,
+          source: source,
+          isCustom: true
+        });
+        
+        // Save blogs
+        chrome.storage.sync.set({ blogs: blogs }, function() {
+          loadBlogs();
+          hideBlogForm();
+        });
+      });
+    }
+  });
+}
+
+function loadBlogsFromAllSources() {
+  // Clear existing blogs list
+  const blogList = document.getElementById('blog-list');
+  blogList.innerHTML = '<li class="loading-blogs">Loading blogs...</li>';
+  
+  // Load user's custom blogs
+  chrome.storage.sync.get(['blogs'], function(result) {
+    const customBlogs = result.blogs || [];
+    
+    // Fetch blogs from Medium
+    fetchMediumBlogs().then(mediumBlogs => {
+      // Fetch blogs from Dev.to
+      fetchDevToBlogs().then(devToBlogs => {
+        // Fetch blogs from Hashnode
+        fetchHashnodeBlogs().then(hashnodeBlogs => {
+          // Combine all blogs
+          const allBlogs = [
+            ...customBlogs,
+            ...mediumBlogs,
+            ...devToBlogs,
+            ...hashnodeBlogs
+          ];
+          
+          // Save fetched blogs
+          chrome.storage.sync.set({ 
+            allFetchedBlogs: allBlogs,
+            lastFetched: new Date().toISOString()
+          });
+          
+          // Display blogs
+          displayBlogs(allBlogs);
+        });
+      });
+    });
+  });
+}
+
+function fetchMediumBlogs() {
+  // This is just a mock function - in a real extension, you would fetch from Medium's RSS feed or API
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve([
+        {
+          title: "How to Build a Chrome Extension",
+          url: "https://medium.com/better-programming/how-to-build-a-chrome-extension-...",
+          category: "Programming",
+          source: "medium"
+        },
+        {
+          title: "The Future of Web Development",
+          url: "https://medium.com/javascript-in-plain-english/the-future-of-web-development-...",
+          category: "Web Dev",
+          source: "medium"
+        },
+        {
+          title: "10 Productivity Tips for Developers",
+          url: "https://medium.com/better-programming/10-productivity-tips-for-developers-...",
+          category: "Productivity",
+          source: "medium"
+        }
+      ]);
+    }, 500);
+  });
+}
+
+function fetchDevToBlogs() {
+  // Mock function
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve([
+        {
+          title: "Understanding Async/Await in JavaScript",
+          url: "https://dev.to/developer/understanding-async-await-in-javascript-...",
+          category: "JavaScript",
+          source: "dev"
+        },
+        {
+          title: "The Complete Guide to CSS Grid",
+          url: "https://dev.to/frontend/the-complete-guide-to-css-grid-...",
+          category: "CSS",
+          source: "dev"
+        }
+      ]);
+    }, 300);
+  });
+}
+
+function fetchHashnodeBlogs() {
+  // Mock function
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve([
+        {
+          title: "Building a RESTful API with Node.js",
+          url: "https://hashnode.com/post/building-a-restful-api-with-nodejs-...",
+          category: "Node.js",
+          source: "hashnode"
+        },
+        {
+          title: "Getting Started with React Hooks",
+          url: "https://hashnode.com/post/getting-started-with-react-hooks-...",
+          category: "React",
+          source: "hashnode"
+        }
+      ]);
+    }, 400);
+  });
+}
+
+function displayBlogs(blogs) {
+  const blogList = document.getElementById('blog-list');
+  blogList.innerHTML = '';
+  
+  if (blogs.length === 0) {
+    blogList.innerHTML = '<li>No blogs available. Add some!</li>';
+    return;
+  }
+  
+  blogs.forEach(blog => {
+    const li = document.createElement('li');
+    
+    const blogTitle = document.createElement('span');
+    blogTitle.className = 'blog-title';
+    blogTitle.textContent = blog.title;
+    
+    const blogCategory = document.createElement('span');
+    blogCategory.className = 'blog-category';
+    blogCategory.textContent = blog.category || '';
+    
+    const blogSource = document.createElement('span');
+    blogSource.className = 'blog-source';
+    blogSource.textContent = blog.source || 'custom';
+    
+    const blogLink = document.createElement('a');
+    blogLink.href = blog.url;
+    blogLink.className = 'blog-link';
+    blogLink.textContent = 'Read';
+    blogLink.target = '_blank';
+    
+    const blogActions = document.createElement('div');
+    blogActions.className = 'blog-actions';
+    blogActions.appendChild(blogLink);
+    
+    if (blog.isCustom) {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+      deleteBtn.addEventListener('click', function() {
+        deleteBlog(blog);
+      });
+      blogActions.appendChild(deleteBtn);
+    }
+    
+    li.appendChild(blogTitle);
+    li.appendChild(blogCategory);
+    if (blog.source) {
+      const sourceLabel = document.createElement('span');
+      sourceLabel.className = 'blog-source-label';
+      sourceLabel.textContent = ` (${blog.source})`;
+      li.appendChild(sourceLabel);
+    }
+    li.appendChild(blogActions);
+    
+    blogList.appendChild(li);
+  });
+}
+
+function filterBlogsBySource(source) {
+  chrome.storage.sync.get(['allFetchedBlogs'], function(result) {
+    const allBlogs = result.allFetchedBlogs || [];
+    
+    if (source === 'all') {
+      displayBlogs(allBlogs);
+    } else if (source === 'custom') {
+      const customBlogs = allBlogs.filter(blog => blog.isCustom);
+      displayBlogs(customBlogs);
+    } else {
+      const filteredBlogs = allBlogs.filter(blog => blog.source === source);
+      displayBlogs(filteredBlogs);
+    }
+  });
+}
+
+function deleteBlog(blogToDelete) {
+  chrome.storage.sync.get(['blogs', 'allFetchedBlogs'], function(result) {
+    const blogs = result.blogs || [];
+    const allBlogs = result.allFetchedBlogs || [];
+    
+    // Remove from blogs array
+    const updatedBlogs = blogs.filter(blog => 
+      blog.title !== blogToDelete.title || blog.url !== blogToDelete.url
+    );
+    
+    // Remove from allFetchedBlogs array
+    const updatedAllBlogs = allBlogs.filter(blog => 
+      blog.title !== blogToDelete.title || blog.url !== blogToDelete.url
+    );
+    
+    // Save updated arrays
+    chrome.storage.sync.set({ 
+      blogs: updatedBlogs,
+      allFetchedBlogs: updatedAllBlogs
+    }, function() {
+      // Get current source filter
+      const activeSource = document.querySelector('.source-btn.active').getAttribute('data-source');
+      filterBlogsBySource(activeSource);
+    });
+  });
+}
+
+// Theme Scheduler Functions
+function initializeThemeScheduler() {
+  const themeRadios = document.querySelectorAll('input[name="theme-type"]');
+  const scheduleOptions = document.getElementById('schedule-options');
+  
+  // Load saved theme settings
+  chrome.storage.sync.get(['themeSettings'], function(result) {
+    if (result.themeSettings) {
+      const settings = result.themeSettings;
+      
+      // Set the radio button
+      const radioToCheck = document.getElementById('theme-' + settings.type);
+      if (radioToCheck) {
+        radioToCheck.checked = true;
+        
+        // Show schedule options if needed
+        if (settings.type === 'scheduled') {
+          scheduleOptions.classList.remove('hidden');
+          
+          if (settings.darkModeStart) {
+            document.getElementById('dark-mode-start').value = settings.darkModeStart;
+          }
+          
+          if (settings.darkModeEnd) {
+            document.getElementById('dark-mode-end').value = settings.darkModeEnd;
+          }
+        }
+      }
+      
+      // Apply theme immediately
+      applyThemeBasedOnSchedule(settings);
+    }
+  });
+  
+  // Theme type selection
+  themeRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+      // Hide or show schedule options
+      if (this.value === 'scheduled') {
+        scheduleOptions.classList.remove('hidden');
+      } else {
+        scheduleOptions.classList.add('hidden');
+      }
+      
+      // Save and apply theme settings
+      saveThemeSettings();
+    });
+  });
+  
+  // Schedule time inputs
+  document.getElementById('dark-mode-start').addEventListener('change', saveThemeSettings);
+  document.getElementById('dark-mode-end').addEventListener('change', saveThemeSettings);
+  
+  // Check time every minute to apply scheduled theme
+  setInterval(checkScheduledTheme, 60000);
+}
+
+function saveThemeSettings() {
+  const themeType = document.querySelector('input[name="theme-type"]:checked').value;
+  
+  const settings = {
+    type: themeType
+  };
+  
+  if (themeType === 'scheduled') {
+    settings.darkModeStart = document.getElementById('dark-mode-start').value;
+    settings.darkModeEnd = document.getElementById('dark-mode-end').value;
+  }
+  
+  chrome.storage.sync.set({ themeSettings: settings }, function() {
+    applyThemeBasedOnSchedule(settings);
+  });
+}
+
+function applyThemeBasedOnSchedule(settings) {
+  const isDarkMode = document.body.classList.contains('dark-mode');
+  const themeToggle = document.getElementById('theme-toggle');
+  
+  switch (settings.type) {
+    case 'light':
+      if (isDarkMode) {
+        document.body.classList.remove('dark-mode');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      }
+      break;
+    
+    case 'dark':
+      if (!isDarkMode) {
+        document.body.classList.add('dark-mode');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      }
+      break;
+    
+    case 'auto':
+      // Check system preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        if (!isDarkMode) {
+          document.body.classList.add('dark-mode');
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+      } else {
+        if (isDarkMode) {
+          document.body.classList.remove('dark-mode');
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+      }
+      break;
+    
+    case 'scheduled':
+      shouldBeDarkMode = isWithinDarkModeHours(settings);
+      
+      if (shouldBeDarkMode && !isDarkMode) {
+        document.body.classList.add('dark-mode');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      } else if (!shouldBeDarkMode && isDarkMode) {
+        document.body.classList.remove('dark-mode');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      }
+      break;
+  }
+  
+  // Save dark mode state
+  chrome.storage.sync.set({ darkMode: document.body.classList.contains('dark-mode') });
+}
+
+function isWithinDarkModeHours(settings) {
+  if (!settings.darkModeStart || !settings.darkModeEnd) return false;
+  
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  
+  // Convert settings times to hours and minutes
+  const startParts = settings.darkModeStart.split(':');
+  const endParts = settings.darkModeEnd.split(':');
+  
+  const startHour = parseInt(startParts[0]);
+  const startMinute = parseInt(startParts[1]);
+  const endHour = parseInt(endParts[0]);
+  const endMinute = parseInt(endParts[1]);
+  
+  // Convert to minutes since midnight for easier comparison
+  const currentTime = currentHour * 60 + currentMinute;
+  const startTime = startHour * 60 + startMinute;
+  const endTime = endHour * 60 + endMinute;
+  
+  // Handle overnight case (e.g., 8:00 PM to 7:00 AM)
+  if (startTime > endTime) {
+    return currentTime >= startTime || currentTime < endTime;
+  } else {
+    return currentTime >= startTime && currentTime < endTime;
+  }
+}
+
+function checkScheduledTheme() {
+  chrome.storage.sync.get(['themeSettings'], function(result) {
+    if (result.themeSettings && result.themeSettings.type === 'scheduled') {
+      applyThemeBasedOnSchedule(result.themeSettings);
+    }
+  });
+}
   document.getElementById('new-todo').focus();
 }
 

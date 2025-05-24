@@ -1,3 +1,10 @@
+// Handle notifications permission
+chrome.runtime.onInstalled.addListener(function() {
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+});
+
 // Initialize stats on install
 chrome.runtime.onInstalled.addListener(function() {
   chrome.storage.sync.get(['stats'], function(result) {

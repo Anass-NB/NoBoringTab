@@ -1,33 +1,33 @@
 :root {
-  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --text-color: #333;
-  --widget-bg: rgba(255, 255, 255, 0.9);
-  --header-bg: rgba(255, 255, 255, 0.9);
-  --primary-color: #6a5acd;
-  --primary-hover: #5a4abd;
-  --border-color: #ddd;
-  --widget-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --input-bg: #fff;
-  --stat-bg: #f5f5f5;
-  --secondary-text: #666;
-  --completed-text: #aaa;
-  --light-text: #888;
+  --bg-gradient: linear-gradient(135deg, #000000 0%, #B6B09F 100%);
+  --text-color: #F2F2F2;
+  --widget-bg: rgba(0, 0, 0, 0.8);
+  --header-bg: rgba(0, 0, 0, 0.8);
+  --primary-color: #EAE4D5;
+  --primary-hover: #B6B09F;
+  --border-color: #B6B09F;
+  --widget-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --input-bg: #000000;
+  --stat-bg: #000000;
+  --secondary-text: #B6B09F;
+  --completed-text: #B6B09F;
+  --light-text: #B6B09F;
 }
 
 body.dark-mode {
-  --bg-gradient: linear-gradient(135deg, #2b2b3e 0%, #1a1a2e 100%);
-  --text-color: #f4f4f4;
-  --widget-bg: rgba(42, 42, 58, 0.9);
-  --header-bg: rgba(42, 42, 58, 0.9);
-  --primary-color: #9f92e8;
-  --primary-hover: #8880d0;
-  --border-color: #444;
+  --bg-gradient: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+  --text-color: #F2F2F2;
+  --widget-bg: rgba(0, 0, 0, 0.8);
+  --header-bg: rgba(0, 0, 0, 0.8);
+  --primary-color: #EAE4D5;
+  --primary-hover: #B6B09F;
+  --border-color: #B6B09F;
   --widget-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --input-bg: #3a3a50;
-  --stat-bg: #343444;
-  --secondary-text: #c0c0c0;
-  --completed-text: #777;
-  --light-text: #aaa;
+  --input-bg: #000000;
+  --stat-bg: #000000;
+  --secondary-text: #B6B09F;
+  --completed-text: #B6B09F;
+  --light-text: #B6B09F;
 }
 
 * {
@@ -46,8 +46,7 @@ body {
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
   padding: 20px;
 }
 

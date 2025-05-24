@@ -6,6 +6,7 @@
   <title>NoBoringTab</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="settings-panel">
@@ -22,8 +23,8 @@
         <input type="radio" id="bg-gradient" name="bg-type" value="gradient">
         <label for="bg-gradient">Custom Gradient</label>
         <div id="gradient-options" class="hidden">
-          <input type="color" id="gradient-color1" value="#667eea">
-          <input type="color" id="gradient-color2" value="#764ba2">
+          <input type="color" id="gradient-color1" value="#000000">
+          <input type="color" id="gradient-color2" value="#B6B09F">
           <div id="custom-bg-preview"></div>
         </div>
       </div>
@@ -42,16 +43,18 @@
       </div>
       <div class="bg-option">
         <input type="radio" id="bg-custom" name="bg-type" value="custom">
-        <label for="bg-custom">Custom Image URL</label>
+        <label for="bg-custom">Custom Image</label>
         <div id="custom-url-options" class="hidden">
-          <input type="text" id="custom-bg-url" placeholder="Enter image URL...">
+          <input type="file" id="bg-file-upload" class="file-upload" accept="image/*">
+          <label for="bg-file-upload" class="file-upload-label">Choose File</label>
+          <img id="preview-image" alt="Preview">
         </div>
       </div>
       <button id="save-bg">Save Background</button>
     </div>
   </div>
   
-  <div class="container">
+  <div>
     <header>
       <h1>NoBoringTab</h1>
       <div class="search-container">
@@ -101,6 +104,10 @@
         <div id="playlist-container">
           <iframe id="spotify-playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8NTLI2TtZa6" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
         </div>
+        <div id="spotify-form">
+          <input type="text" id="spotify-url-input" placeholder="Enter Spotify playlist URL...">
+          <button id="spotify-save-btn">Save Playlist</button>
+        </div>
       </div>
 
       <div class="widget" id="stats-widget">
@@ -149,6 +156,10 @@
           <button id="cancel-blog">Cancel</button>
         </div>
       </div>
+    </div>
+    
+    <div class="footer">
+      made by Anass-NB with love ❤
     </div>
   </div>
 

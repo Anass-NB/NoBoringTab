@@ -8,6 +8,49 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+  <div id="settings-panel">
+    <button id="close-settings"><i class="fas fa-times"></i></button>
+    <h2>Settings</h2>
+    
+    <div id="bg-customizer">
+      <h3>Background Settings</h3>
+      <div class="bg-option">
+        <input type="radio" id="bg-default" name="bg-type" value="default" checked>
+        <label for="bg-default">Default Gradient</label>
+      </div>
+      <div class="bg-option">
+        <input type="radio" id="bg-gradient" name="bg-type" value="gradient">
+        <label for="bg-gradient">Custom Gradient</label>
+        <div id="gradient-options" class="hidden">
+          <input type="color" id="gradient-color1" value="#667eea">
+          <input type="color" id="gradient-color2" value="#764ba2">
+          <div id="custom-bg-preview"></div>
+        </div>
+      </div>
+      <div class="bg-option">
+        <input type="radio" id="bg-image" name="bg-type" value="image">
+        <label for="bg-image">Background Image</label>
+        <div id="image-options" class="hidden">
+          <select id="bg-image-select">
+            <option value="mountains">Mountains</option>
+            <option value="ocean">Ocean</option>
+            <option value="forest">Forest</option>
+            <option value="cityscape">Cityscape</option>
+            <option value="abstract">Abstract</option>
+          </select>
+        </div>
+      </div>
+      <div class="bg-option">
+        <input type="radio" id="bg-custom" name="bg-type" value="custom">
+        <label for="bg-custom">Custom Image URL</label>
+        <div id="custom-url-options" class="hidden">
+          <input type="text" id="custom-bg-url" placeholder="Enter image URL...">
+        </div>
+      </div>
+      <button id="save-bg">Save Background</button>
+    </div>
+  </div>
+  
   <div class="container">
     <header>
       <h1>NoBoringTab</h1>
@@ -20,6 +63,10 @@
       <div class="time-display">
         <div id="current-time">00:00:00</div>
         <div id="current-date">Loading date...</div>
+      </div>
+      <div>
+        <button id="theme-toggle" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
+        <button id="settings-btn" title="Settings"><i class="fas fa-cog"></i></button>
       </div>
     </header>
 
@@ -87,6 +134,19 @@
           <input type="time" id="event-time">
           <button id="save-event">Add</button>
           <button id="cancel-event">Cancel</button>
+        </div>
+      </div>
+      
+      <div class="widget" id="blogs-widget">
+        <h2>Recommended Blogs</h2>
+        <ul id="blog-list"></ul>
+        <button id="add-blog"><i class="fas fa-plus"></i> Add Blog</button>
+        <div id="blog-form" class="hidden">
+          <input type="text" id="blog-title" placeholder="Blog title">
+          <input type="text" id="blog-url" placeholder="Blog URL">
+          <input type="text" id="blog-category" placeholder="Category (optional)">
+          <button id="save-blog">Add</button>
+          <button id="cancel-blog">Cancel</button>
         </div>
       </div>
     </div>

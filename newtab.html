@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoBoringTab</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>NoBoringTab</h1>
+      <div class="search-container">
+        <form id="search-form" action="https://www.google.com/search" method="get">
+          <input type="text" id="search-input" name="q" placeholder="Search Google...">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+      <div class="time-display">
+        <div id="current-time">00:00:00</div>
+        <div id="current-date">Loading date...</div>
+      </div>
+    </header>
+
+    <div class="dashboard">
+      <div class="widget" id="todo-widget">
+        <h2>To-Do List <button id="add-todo"><i class="fas fa-plus"></i></button></h2>
+        <ul id="todo-list"></ul>
+        <div id="todo-form" class="hidden">
+          <input type="text" id="new-todo" placeholder="New task...">
+          <input type="date" id="todo-date">
+          <button id="save-todo">Add</button>
+          <button id="cancel-todo">Cancel</button>
+        </div>
+      </div>
+
+      <div class="widget" id="upcoming-widget">
+        <h2>Upcoming Due Dates</h2>
+        <ul id="upcoming-list"></ul>
+      </div>
+
+      <div class="widget" id="quote-widget">
+        <h2>Daily Motivation</h2>
+        <div id="quote-container">
+          <p id="quote-text"></p>
+          <p id="quote-author"></p>
+        </div>
+        <button id="new-quote"><i class="fas fa-sync-alt"></i> New Quote</button>
+      </div>
+
+      <div class="widget" id="playlist-widget">
+        <h2>Study Playlist</h2>
+        <div id="playlist-container">
+          <iframe id="spotify-playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8NTLI2TtZa6" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+        </div>
+      </div>
+
+      <div class="widget" id="stats-widget">
+        <h2>Tab Statistics</h2>
+        <div id="stats-container">
+          <div class="stat">
+            <span class="stat-label">Tabs Opened Today:</span>
+            <span id="tabs-opened">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Most Visited Site:</span>
+            <span id="most-visited">-</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time Spent Browsing:</span>
+            <span id="time-browsing">0m</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Productivity Score:</span>
+            <span id="productivity-score">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="widget" id="agenda-widget">
+        <h2>Today's Agenda</h2>
+        <ul id="agenda-list"></ul>
+        <button id="add-agenda-item"><i class="fas fa-plus"></i> Add Event</button>
+        <div id="agenda-form" class="hidden">
+          <input type="text" id="event-title" placeholder="Event title">
+          <input type="time" id="event-time">
+          <button id="save-event">Add</button>
+          <button id="cancel-event">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="newtab.js"></script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #6a5acd;
+  font-size: 24px;
+}
+
+.search-container {
+  flex-grow: 1;
+  margin: 0 20px;
+}
+
+#search-form {
+  display: flex;
+  width: 100%;
+}
+
+#search-input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 25px 0 0 25px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+#search-input:focus {
+  border-color: #6a5acd;
+}
+
+#search-form button {
+  background-color: #6a5acd;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 0 25px 25px 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#search-form button:hover {
+  background-color: #5a4abd;
+}
+
+.time-display {
+  text-align: right;
+}
+
+#current-time {
+  font-size: 24px;
+  font-weight: bold;
+  color: #6a5acd;
+}
+
+#current-date {
+  color: #666;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.widget {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 100%;
+}
+
+.widget h2 {
+  color: #6a5acd;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* To-Do List Widget */
+#todo-list, #upcoming-list, #agenda-list {
+  list-style-type: none;
+}
+
+#todo-list li, #upcoming-list li, #agenda-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+}
+
+.todo-checkbox {
+  margin-right: 10px;
+}
+
+.todo-text {
+  flex-grow: 1;
+}
+
+.todo-date {
+  font-size: 12px;
+  color: #888;
+}
+
+.todo-completed .todo-text {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+.todo-actions button, .agenda-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6a5acd;
+  margin-left: 5px;
+}
+
+#add-todo, #add-agenda-item {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6a5acd;
+  font-size: 16px;
+}
+
+#todo-form, #agenda-form {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#todo-form input, #agenda-form input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#todo-form button, #agenda-form button {
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#save-todo, #save-event {
+  background-color: #6a5acd;
+  color: white;
+}
+
+#cancel-todo, #cancel-event {
+  background-color: #f44336;
+  color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Quote Widget */
+#quote-container {
+  margin-bottom: 15px;
+  min-height: 100px;
+}
+
+#quote-text {
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+#quote-author {
+  text-align: right;
+  font-weight: bold;
+}
+
+#new-quote {
+  background-color: #6a5acd;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#new-quote:hover {
+  background-color: #5a4abd;
+}
+
+/* Stats Widget */
+#stats-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.stat {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #666;
+}
+
+#tabs-opened, #most-visited, #time-browsing, #productivity-score {
+  font-size: 24px;
+  font-weight: bold;
+  color: #6a5acd;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-container {
+    margin: 15px 0;
+  }
+
+  .time-display {
+    text-align: center;
+  }
+
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+}

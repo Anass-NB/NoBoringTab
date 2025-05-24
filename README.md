@@ -14,28 +14,36 @@ NoBoringTab replaces your Chrome's new tab page with a productivity dashboard th
 ## Features
 
 ### Google Search
+
 Search Google directly from the top search bar in NoBoringTab.
 
 ### Todo List
+
 Add, complete, and delete tasks. Set due dates to organize your work.
 
 ### Upcoming Due Dates
+
 Quickly see what's due in the next 7 days to plan ahead.
 
 ### Daily Motivation
+
 Get inspired with randomly generated motivational quotes.
 
 ### Study Playlist
+
 Access a curated Spotify playlist directly in your new tab.
 
 ### Tab Statistics
+
 Track your browsing habits:
+
 - Number of tabs opened today
 - Most visited website
 - Time spent browsing
 - Productivity score based on the websites you visit
 
 ### Today's Agenda
+
 Keep track of your daily schedule with timed events.
 
 ## Installation
@@ -57,6 +65,7 @@ Keep track of your daily schedule with timed events.
 ## Data Storage
 
 All your data is stored locally in Chrome's sync storage, which means:
+
 - Your data syncs across devices when you're signed into Chrome
 - Your data persists between browser sessions
 - No data is sent to any external servers
@@ -64,6 +73,7 @@ All your data is stored locally in Chrome's sync storage, which means:
 ## Privacy
 
 NoBoringTab respects your privacy:
+
 - No data collection or tracking
 - No external API calls except for the quotes API
 - All statistics are computed locally

@@ -421,6 +421,13 @@ function updateUpcomingDates(todos) {
 function showTodoForm() {
   document.getElementById('todo-form').classList.remove('hidden');
 // Pomodoro Timer Functions
+// Global variables for Pomodoro
+let pomodoroTimer;
+let pomodoroTimeLeft = 25 * 60; // 25 minutes in seconds
+let pomodoroIsActive = false;
+let pomodoroIsBreak = false;
+let originalTitle = document.title;
+
 function initializePomodoro() {
   const startBtn = document.getElementById('pomodoro-start');
   const pauseBtn = document.getElementById('pomodoro-pause');
@@ -430,16 +437,34 @@ function initializePomodoro() {
   const notificationsCheckbox = document.getElementById('pomodoro-notifications');
   const tabTitleCheckbox = document.getElementById('pomodoro-tab-title');
   
+  // Initialize with default values
+  let pomodoroTimeLeft = parseInt(workTimeInput.value) * 60; // 25 minutes in seconds by default
+  updatePomodoroDisplay();
+  
   // Load saved settings
-  chrome.storage.sync.get(['pomodoroSettings'], function(result) {
-    if (result.pomodoroSettings) {
-      const settings = result.pomodoroSettings;
-      workTimeInput.value = settings.workTime || 25;
-      breakTimeInput.value = settings.breakTime || 5;
-      notificationsCheckbox.checked = settings.notifications !== undefined ? settings.notifications : true;
-      tabTitleCheckbox.checked = settings.tabTitle !== undefined ? settings.tabTitle : true;
-    }
-  });
+  try {
+    chrome.storage.sync.get(['pomodoroSettings'], function(result) {
+      if (result.pomodoroSettings) {
+        const settings = result.pomodoroSettings;
+        workTimeInput.value = settings.workTime || 25;
+        breakTimeInput.value = settings.breakTime || 5;
+        
+        if (settings.notifications !== undefined) {
+          notificationsCheckbox.checked = settings.notifications;
+        }
+        
+        if (settings.tabTitle !== undefined) {
+          tabTitleCheckbox.checked = settings.tabTitle;
+        }
+        
+        // Update time left based on loaded settings
+        pomodoroTimeLeft = parseInt(workTimeInput.value) * 60;
+        updatePomodoroDisplay();
+      }
+    });
+  } catch (error) {
+    console.error("Error loading Pomodoro settings:", error);
+  }
   
   // Save settings when changed
   [workTimeInput, breakTimeInput, notificationsCheckbox, tabTitleCheckbox].forEach(element => {
@@ -451,14 +476,17 @@ function initializePomodoro() {
   pauseBtn.addEventListener('click', pausePomodoro);
   resetBtn.addEventListener('click', resetPomodoro);
   
-  // Add status display
-  const pomodoroContainer = document.getElementById('pomodoro-container');
-  const statusElement = document.createElement('div');
-  statusElement.id = 'pomodoro-status';
-  statusElement.className = 'pomodoro-status hidden';
-  pomodoroContainer.appendChild(statusElement);
+  // Add status display if it doesn't exist
+  if (!document.getElementById('pomodoro-status')) {
+    const pomodoroContainer = document.getElementById('pomodoro-container');
+    const statusElement = document.createElement('div');
+    statusElement.id = 'pomodoro-status';
+    statusElement.className = 'pomodoro-status hidden';
+    pomodoroContainer.appendChild(statusElement);
+  }
 }
 
+// Global variables for Pomodoro
 let pomodoroTimer;
 let pomodoroTimeLeft = 25 * 60; // 25 minutes in seconds
 let pomodoroIsActive = false;
@@ -494,17 +522,22 @@ function startPomodoro() {
       clearInterval(pomodoroTimer);
       pomodoroIsActive = false;
       
-      const notificationsEnabled = document.getElementById('pomodoro-notifications').checked;
+      const notificationsCheckbox = document.getElementById('pomodoro-notifications');
+      const notificationsEnabled = notificationsCheckbox && notificationsCheckbox.checked;
       
       if (notificationsEnabled) {
-        if (Notification.permission === "granted") {
-          showPomodoroNotification();
-        } else if (Notification.permission !== "denied") {
-          Notification.requestPermission().then(function(permission) {
-            if (permission === "granted") {
-              showPomodoroNotification();
-            }
-          });
+        try {
+          if (Notification.permission === "granted") {
+            showPomodoroNotification();
+          } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(function(permission) {
+              if (permission === "granted") {
+                showPomodoroNotification();
+              }
+            });
+          }
+        } catch (error) {
+          console.error("Error showing notification:", error);
         }
       }
       
@@ -547,7 +580,8 @@ function resetPomodoro() {
   pomodoroIsActive = false;
   pomodoroIsBreak = false;
   
-  const workTime = parseInt(document.getElementById('pomodoro-work-time').value);
+  const workTimeInput = document.getElementById('pomodoro-work-time');
+  const workTime = parseInt(workTimeInput.value);
   pomodoroTimeLeft = workTime * 60;
   
   const startBtn = document.getElementById('pomodoro-start');
@@ -556,21 +590,29 @@ function resetPomodoro() {
   
   startBtn.classList.remove('hidden');
   pauseBtn.classList.add('hidden');
-  statusElement.classList.add('hidden');
+  
+  if (statusElement) {
+    statusElement.classList.add('hidden');
+  }
   
   updatePomodoroDisplay();
   document.title = originalTitle;
 }
 
 function updatePomodoroDisplay() {
+  const timerDisplay = document.getElementById('pomodoro-timer');
+  if (!timerDisplay) return;
+  
   const minutes = Math.floor(pomodoroTimeLeft / 60);
   const seconds = pomodoroTimeLeft % 60;
   const displayTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   
-  document.getElementById('pomodoro-timer').textContent = displayTime;
+  timerDisplay.textContent = displayTime;
   
   // Update tab title if enabled
-  const tabTitleEnabled = document.getElementById('pomodoro-tab-title').checked;
+  const tabTitleCheckbox = document.getElementById('pomodoro-tab-title');
+  const tabTitleEnabled = tabTitleCheckbox && tabTitleCheckbox.checked;
+  
   if (tabTitleEnabled) {
     const status = pomodoroIsBreak ? 'Break' : 'Focus';
     document.title = `(${displayTime} - ${status}) NoBoringTab`;
@@ -580,40 +622,53 @@ function updatePomodoroDisplay() {
 }
 
 function showPomodoroNotification() {
-  const title = pomodoroIsBreak ? 'Time to get back to work!' : 'Time for a break!';
-  const body = pomodoroIsBreak 
-    ? 'Your break is over. Let\'s get back to being productive!' 
-    : 'Good job! Take a short break before continuing.';
-  
-  const notification = new Notification(title, {
-    body: body,
-    icon: '/icons/icon128.png'
-  });
-  
-  notification.onclick = function() {
-    window.focus();
-    this.close();
-  };
+  try {
+    const title = pomodoroIsBreak ? 'Time to get back to work!' : 'Time for a break!';
+    const body = pomodoroIsBreak 
+      ? 'Your break is over. Let\'s get back to being productive!' 
+      : 'Good job! Take a short break before continuing.';
+    
+    const notification = new Notification(title, {
+      body: body,
+      icon: '/icons/icon128.png'
+    });
+    
+    notification.onclick = function() {
+      window.focus();
+      this.close();
+    };
+  } catch (error) {
+    console.error("Error creating notification:", error);
+  }
 }
 
 function savePomodoroSettings() {
-  const settings = {
-    workTime: parseInt(document.getElementById('pomodoro-work-time').value),
-    breakTime: parseInt(document.getElementById('pomodoro-break-time').value),
-    notifications: document.getElementById('pomodoro-notifications').checked,
-    tabTitle: document.getElementById('pomodoro-tab-title').checked
-  };
-  
-  chrome.storage.sync.set({ pomodoroSettings: settings });
-  
-  // If timer is not active, update the time left based on new settings
-  if (!pomodoroIsActive) {
-    if (!pomodoroIsBreak) {
-      pomodoroTimeLeft = settings.workTime * 60;
-    } else {
-      pomodoroTimeLeft = settings.breakTime * 60;
+  try {
+    const workTimeInput = document.getElementById('pomodoro-work-time');
+    const breakTimeInput = document.getElementById('pomodoro-break-time');
+    const notificationsCheckbox = document.getElementById('pomodoro-notifications');
+    const tabTitleCheckbox = document.getElementById('pomodoro-tab-title');
+    
+    const settings = {
+      workTime: parseInt(workTimeInput.value),
+      breakTime: parseInt(breakTimeInput.value),
+      notifications: notificationsCheckbox.checked,
+      tabTitle: tabTitleCheckbox.checked
+    };
+    
+    chrome.storage.sync.set({ pomodoroSettings: settings });
+    
+    // If timer is not active, update the time left based on new settings
+    if (!pomodoroIsActive) {
+      if (!pomodoroIsBreak) {
+        pomodoroTimeLeft = settings.workTime * 60;
+      } else {
+        pomodoroTimeLeft = settings.breakTime * 60;
+      }
+      updatePomodoroDisplay();
     }
-    updatePomodoroDisplay();
+  } catch (error) {
+    console.error("Error saving Pomodoro settings:", error);
   }
 }
 

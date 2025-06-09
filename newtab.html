@@ -1,248 +1,752 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NoBoringTab</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <title>NoBoringTab Enhanced</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Taurus, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(2px);
+      z-index: -1;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto 1fr 1fr;
+      gap: 20px;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .search-container {
+      flex: 1;
+      max-width: 600px;
+      margin: 0 20px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-box:focus {
+      background: white;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .settings-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      color: white;
+      font-size: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .settings-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+
+    .widget {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .widget:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .widget h3 {
+      margin-bottom: 15px;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .todo-widget {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .todo-item:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .todo-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: #4CAF50;
+    }
+
+    .todo-text {
+      flex: 1;
+      font-size: 14px;
+    }
+
+    .todo-text.completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    .todo-date {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .add-todo {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .todo-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      outline: none;
+    }
+
+    .todo-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .add-btn {
+      background: #4CAF50;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 15px;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .add-btn:hover {
+      background: #45a049;
+      transform: scale(1.05);
+    }
+
+    .stock-widget {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .stock-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .stock-symbol {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .stock-price {
+      font-size: 14px;
+    }
+
+    .stock-change.positive {
+      color: #4CAF50;
+    }
+
+    .stock-change.negative {
+      color: #f44336;
+    }
+
+    .spotify-widget {
+      text-align: center;
+    }
+
+    .spotify-iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+
+    .spotify-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .spotify-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .quote-widget {
+      text-align: center;
+      position: relative;
+    }
+
+    .quote-text {
+      font-style: italic;
+      font-size: 16px;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .quote-author {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .refresh-quote {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+
+    .refresh-quote:hover {
+      opacity: 1;
+      transform: rotate(180deg);
+    }
+
+    .settings-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+
+    .settings-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      color: #333;
+    }
+
+    .settings-section {
+      margin-bottom: 20px;
+    }
+
+    .settings-section h4 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .settings-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .close-settings {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .time-widget {
+      text-align: center;
+    }
+
+    .time-display {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .date-display {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 15px;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .search-container {
+        margin: 0;
+        max-width: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <div id="settings-panel">
-    <button id="close-settings"><i class="fas fa-times"></i></button>
-    <h2>Settings</h2>
-    
-    <div id="theme-customizer">
-      <h3>Theme Settings</h3>
-      <div class="theme-option">
-        <input type="radio" id="theme-light" name="theme-type" value="light">
-        <label for="theme-light">Light Mode</label>
+  <div class="overlay"></div>
+
+  <div class="container">
+    <header class="header">
+      <div class="time-widget">
+        <div class="time-display" id="currentTime">12:00 PM</div>
+        <div class="date-display" id="currentDate">Monday, January 1</div>
       </div>
-      <div class="theme-option">
-        <input type="radio" id="theme-dark" name="theme-type" value="dark">
-        <label for="theme-dark">Dark Mode</label>
-      </div>
-      <div class="theme-option">
-        <input type="radio" id="theme-auto" name="theme-type" value="auto" checked>
-        <label for="theme-auto">Auto (System Default)</label>
-      </div>
-      <div class="theme-option">
-        <input type="radio" id="theme-scheduled" name="theme-type" value="scheduled">
-        <label for="theme-scheduled">Scheduled</label>
-        <div id="schedule-options" class="hidden">
-          <div class="schedule-option">
-            <label for="dark-mode-start">Dark mode starts at:</label>
-            <input type="time" id="dark-mode-start" value="20:00">
-          </div>
-          <div class="schedule-option">
-            <label for="dark-mode-end">Dark mode ends at:</label>
-            <input type="time" id="dark-mode-end" value="07:00">
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div id="bg-customizer">
-      <h3>Background Settings</h3>
-      <div class="bg-option">
-        <input type="radio" id="bg-default" name="bg-type" value="default" checked>
-        <label for="bg-default">Default Gradient</label>
-      </div>
-      <div class="bg-option">
-        <input type="radio" id="bg-gradient" name="bg-type" value="gradient">
-        <label for="bg-gradient">Custom Gradient</label>
-        <div id="gradient-options" class="hidden">
-          <input type="color" id="gradient-color1" value="#000000">
-          <input type="color" id="gradient-color2" value="#273F4F">
-          <div id="custom-bg-preview"></div>
-        </div>
-      </div>
-      <div class="bg-option">
-        <input type="radio" id="bg-image" name="bg-type" value="image">
-        <label for="bg-image">Background Image</label>
-        <div id="image-options" class="hidden">
-          <select id="bg-image-select">
-            <option value="mountains">Mountains</option>
-            <option value="ocean">Ocean</option>
-            <option value="forest">Forest</option>
-            <option value="cityscape">Cityscape</option>
-            <option value="abstract">Abstract</option>
-          </select>
-        </div>
-      </div>
-      <div class="bg-option">
-        <input type="radio" id="bg-custom" name="bg-type" value="custom">
-        <label for="bg-custom">Custom Image</label>
-        <div id="custom-url-options" class="hidden">
-          <input type="file" id="bg-file-upload" class="file-upload" accept="image/*">
-          <label for="bg-file-upload" class="file-upload-label">Choose File</label>
-          <img id="preview-image" alt="Preview">
-        </div>
-      </div>
-      <button id="save-bg">Save Background</button>
-    </div>
-  </div>
-  
-  <div>
-    <header>
-      <h1>NoBoringTab</h1>
+
       <div class="search-container">
-        <form id="search-form" action="https://www.google.com/search" method="get">
-          <input type="text" id="search-input" name="q" placeholder="Search Google...">
-          <button type="submit"><i class="fas fa-search"></i></button>
-        </form>
+        <input type="text" class="search-box" placeholder="Search Google..." id="searchInput">
       </div>
-      <div class="time-display">
-        <div id="current-time">00:00:00</div>
-        <div id="current-date">Loading date...</div>
-      </div>
-      <div>
-        <button id="theme-toggle" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
-        <button id="settings-btn" title="Settings"><i class="fas fa-cog"></i></button>
-      </div>
+
+      <button class="settings-btn" id="settingsBtn">⚙️</button>
     </header>
 
-    <div class="dashboard">
-      <div class="widget" id="todo-widget">
-        <h2>To-Do List <button id="add-todo"><i class="fas fa-plus"></i></button></h2>
-        <ul id="todo-list"></ul>
-        <div id="todo-form" class="hidden">
-          <input type="text" id="new-todo" placeholder="New task...">
-          <input type="date" id="todo-date">
-          <button id="save-todo">Add</button>
-          <button id="cancel-todo">Cancel</button>
-        </div>
+    <div class="widget todo-widget">
+      <h3>📝 To-Do List</h3>
+      <div id="todoList"></div>
+      <div class="add-todo">
+        <input type="text" class="todo-input" placeholder="Add new task..." id="todoInput">
+        <input type="date" class="todo-input" id="todoDate">
+        <button class="add-btn" id="addTodoBtn">Add</button>
       </div>
+    </div>
 
-      <!-- Upcoming Due Dates section removed as requested -->
-
-      <div class="widget" id="quote-widget">
-        <h2>Daily Motivation</h2>
-        <div id="quote-container">
-          <p id="quote-text"></p>
-          <p id="quote-author"></p>
-        </div>
-        <button id="new-quote"><i class="fas fa-sync-alt"></i> New Quote</button>
-      </div>
-
-      <div class="widget" id="playlist-widget">
-        <h2>Study Playlist</h2>
-        <div id="playlist-container">
-          <iframe id="spotify-playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8NTLI2TtZa6" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-        </div>
-        <div id="spotify-form">
-          <input type="text" id="spotify-url-input" placeholder="Enter Spotify playlist URL...">
-          <button id="spotify-save-btn">Save Playlist</button>
-        </div>
-        <div id="genre-selector">
-          <h3>Quick Genre Selection</h3>
-          <div class="genre-buttons">
-            <button class="genre-btn" data-playlist="37i9dQZF1DX8NTLI2TtZa6">Lo-Fi</button>
-            <button class="genre-btn" data-playlist="37i9dQZF1DWWEJlAGA9gs0">Classical</button>
-            <button class="genre-btn" data-playlist="37i9dQZF1DX0MLFaUdXnjA">Chill</button>
-            <button class="genre-btn" data-playlist="37i9dQZF1DX4sWSpwq3LiO">Jazz</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="widget" id="stats-widget">
-        <h2>Tab Statistics</h2>
-        <div id="stats-container">
-          <div class="stat">
-            <span class="stat-label">Tabs Opened Today:</span>
-            <span id="tabs-opened">0</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Most Visited Site:</span>
-            <span id="most-visited">-</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Time Spent Browsing:</span>
-            <span id="time-browsing">0m</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Productivity Score:</span>
-            <span id="productivity-score">0%</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="widget" id="pomodoro-widget">
-        <h2>Focus Timer</h2>
-        <div id="pomodoro-container">
-          <div id="pomodoro-timer">25:00</div>
-          <div id="pomodoro-controls">
-            <button id="pomodoro-start" class="pomodoro-btn"><i class="fas fa-play"></i> Start</button>
-            <button id="pomodoro-pause" class="pomodoro-btn hidden"><i class="fas fa-pause"></i> Pause</button>
-            <button id="pomodoro-reset" class="pomodoro-btn"><i class="fas fa-redo"></i> Reset</button>
-          </div>
-          <div id="pomodoro-settings">
-            <div class="pomodoro-option">
-              <label for="pomodoro-work-time">Work (minutes):</label>
-              <input type="number" id="pomodoro-work-time" min="1" max="60" value="25">
-            </div>
-            <div class="pomodoro-option">
-              <label for="pomodoro-break-time">Break (minutes):</label>
-              <input type="number" id="pomodoro-break-time" min="1" max="30" value="5">
-            </div>
-            <div class="pomodoro-option">
-              <input type="checkbox" id="pomodoro-notifications" checked>
-              <label for="pomodoro-notifications">Enable notifications</label>
-            </div>
-            <div class="pomodoro-option">
-              <input type="checkbox" id="pomodoro-tab-title" checked>
-              <label for="pomodoro-tab-title">Show timer in tab title</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="widget" id="agenda-widget">
-        <h2>Today's Agenda</h2>
-        <ul id="agenda-list"></ul>
-        <button id="add-agenda-item"><i class="fas fa-plus"></i> Add Event</button>
-        <div id="agenda-form" class="hidden">
-          <input type="text" id="event-title" placeholder="Event title">
-          <input type="time" id="event-time">
-          <button id="save-event">Add</button>
-          <button id="cancel-event">Cancel</button>
-        </div>
-      </div>
-      
-      <div class="widget" id="blogs-widget">
-        <h2>Recommended Blogs</h2>
-        <div id="blog-sources">
-          <button class="source-btn active" data-source="all">All</button>
-          <button class="source-btn" data-source="medium">Medium</button>
-          <button class="source-btn" data-source="dev">Dev.to</button>
-          <button class="source-btn" data-source="hashnode">Hashnode</button>
-          <button class="source-btn" data-source="custom">My Blogs</button>
-        </div>
-        <ul id="blog-list"></ul>
-        <button id="refresh-blogs"><i class="fas fa-sync-alt"></i> Refresh</button>
-        <button id="add-blog"><i class="fas fa-plus"></i> Add Blog</button>
-        <div id="blog-form" class="hidden">
-          <input type="text" id="blog-title" placeholder="Blog title">
-          <input type="text" id="blog-url" placeholder="Blog URL">
-          <input type="text" id="blog-category" placeholder="Category (optional)">
-          <select id="blog-source">
-            <option value="custom">Custom</option>
-            <option value="medium">Medium</option>
-            <option value="dev">Dev.to</option>
-            <option value="hashnode">Hashnode</option>
-          </select>
-          <button id="save-blog">Add</button>
-          <button id="cancel-blog">Cancel</button>
+    <div class="widget stock-widget">
+      <h3>📈 Stock Data</h3>
+      <div id="stockList">
+        <div class="stock-item">
+          <span class="stock-symbol">Loading...</span>
         </div>
       </div>
     </div>
-    
-    <div class="footer">
-      made by Anass-NB with love ❤
+
+    <div class="widget spotify-widget">
+      <h3>🎵 Spotify Playlist</h3>
+      <input type="text" class="spotify-input" placeholder="Paste Spotify playlist URL..." id="spotifyInput">
+      <button class="add-btn" onclick="updateSpotifyPlaylist()">Update Playlist</button>
+      <iframe class="spotify-iframe" id="spotifyIframe"
+        src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd?utm_source=generator" frameborder="0"
+        allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"></iframe>
+    </div>
+
+    <div class="widget quote-widget">
+      <h3>💭 Daily Motivation</h3>
+      <button class="refresh-quote" onclick="loadQuote()">🔄</button>
+      <div class="quote-text" id="quoteText">Loading inspirational quote...</div>
+      <div class="quote-author" id="quoteAuthor"></div>
     </div>
   </div>
 
-  <script src="newtab.js"></script>
+  <!-- Settings Modal -->
+  <div class="settings-modal" id="settingsModal">
+    <div class="settings-content">
+      <button class="close-settings" onclick="closeSettings()">×</button>
+      <h3>Settings</h3>
+
+      <div class="settings-section">
+        <h4>Background Image</h4>
+        <input type="text" class="settings-input" id="backgroundUrl"
+          placeholder="Enter image URL or leave empty for default">
+        <button class="add-btn" onclick="updateBackground()">Update Background</button>
+      </div>
+
+      <div class="settings-section">
+        <h4>Stock Symbols (comma separated)</h4>
+        <input type="text" class="settings-input" id="stockSymbols" placeholder="AAPL,GOOGL,MSFT,TSLA">
+        <button class="add-btn" onclick="updateStocks()">Update Stocks</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let todos = [];
+    let currentQuote = {};
+    let stockSymbols = ['AAPL', 'GOOGL', 'MSFT', 'TSLA'];
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function () {
+      loadTodos();
+      loadQuote();
+      loadStocks();
+      updateDateTime();
+      loadSettings();
+
+      // Set up event listeners
+      document.getElementById('searchInput').addEventListener('keypress', handleSearch);
+      document.getElementById('todoInput').addEventListener('keypress', handleTodoKeyPress);
+      document.getElementById('addTodoBtn').addEventListener('click', addTodo);
+      document.getElementById('settingsBtn').addEventListener('click', openSettings);
+
+      // Update time every second
+      setInterval(updateDateTime, 1000);
+
+      // Update stocks every 5 minutes
+      setInterval(loadStocks, 300000);
+    });
+
+    // Time and Date functions
+    function updateDateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+      const dateString = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      document.getElementById('currentTime').textContent = timeString;
+      document.getElementById('currentDate').textContent = dateString;
+    }
+
+    // Search functionality
+    function handleSearch(event) {
+      if (event.key === 'Enter') {
+        const query = event.target.value.trim();
+        if (query) {
+          window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+          event.target.value = '';
+        }
+      }
+    }
+
+    // Todo list functions
+    function loadTodos() {
+      const savedTodos = localStorage.getItem('noBoringTabTodos');
+      if (savedTodos) {
+        todos = JSON.parse(savedTodos);
+        renderTodos();
+      }
+    }
+
+    function saveTodos() {
+      localStorage.setItem('noBoringTabTodos', JSON.stringify(todos));
+    }
+
+    function addTodo() {
+      const input = document.getElementById('todoInput');
+      const dateInput = document.getElementById('todoDate');
+      const text = input.value.trim();
+
+      if (text) {
+        const todo = {
+          id: Date.now(),
+          text: text,
+          completed: false,
+          date: dateInput.value || null,
+          createdAt: new Date().toISOString()
+        };
+
+        todos.unshift(todo);
+        saveTodos();
+        renderTodos();
+        input.value = '';
+        dateInput.value = '';
+      }
+    }
+
+    function handleTodoKeyPress(event) {
+      if (event.key === 'Enter') {
+        addTodo();
+      }
+    }
+
+    function toggleTodo(id) {
+      todos = todos.map(todo =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      );
+      saveTodos();
+      renderTodos();
+    }
+
+    function deleteTodo(id) {
+      todos = todos.filter(todo => todo.id !== id);
+      saveTodos();
+      renderTodos();
+    }
+
+    function renderTodos() {
+      const todoList = document.getElementById('todoList');
+      todoList.innerHTML = '';
+
+      todos.forEach(todo => {
+        const todoItem = document.createElement('div');
+        todoItem.className = 'todo-item';
+
+        const dateStr = todo.date ? new Date(todo.date).toLocaleDateString() : '';
+
+        todoItem.innerHTML = `
+                    <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} 
+                           onchange="toggleTodo(${todo.id})">
+                    <span class="todo-text ${todo.completed ? 'completed' : ''}">${todo.text}</span>
+                    <span class="todo-date">${dateStr}</span>
+                    <button onclick="deleteTodo(${todo.id})" style="background:none;border:none;color:white;opacity:0.7;cursor:pointer;">×</button>
+                `;
+
+        todoList.appendChild(todoItem);
+      });
+    }
+
+    // Quote functions
+    async function loadQuote() {
+      try {
+        const response = await fetch('https://quotable.io/random');
+        const data = await response.json();
+        currentQuote = data;
+
+        document.getElementById('quoteText').textContent = `"${data.content}"`;
+        document.getElementById('quoteAuthor').textContent = `— ${data.author}`;
+      } catch (error) {
+        console.error('Error loading quote:', error);
+        document.getElementById('quoteText').textContent = '"The only way to do great work is to love what you do."';
+        document.getElementById('quoteAuthor').textContent = '— Steve Jobs';
+      }
+    }
+
+    // Stock functions
+    async function loadStocks() {
+      const stockList = document.getElementById('stockList');
+      stockList.innerHTML = '<div class="stock-item"><span class="stock-symbol">Loading stocks...</span></div>';
+
+      try {
+        // Using a free API alternative (Alpha Vantage demo)
+        const stockData = await Promise.all(
+          stockSymbols.map(async (symbol) => {
+            // Mock data for demonstration - replace with actual API
+            const mockPrice = (Math.random() * 200 + 50).toFixed(2);
+            const mockChange = ((Math.random() - 0.5) * 10).toFixed(2);
+
+            return {
+              symbol,
+              price: mockPrice,
+              change: mockChange,
+              changePercent: ((mockChange / mockPrice) * 100).toFixed(2)
+            };
+          })
+        );
+
+        renderStocks(stockData);
+      } catch (error) {
+        console.error('Error loading stocks:', error);
+        stockList.innerHTML = '<div class="stock-item"><span class="stock-symbol">Error loading stocks</span></div>';
+      }
+    }
+
+    function renderStocks(stockData) {
+      const stockList = document.getElementById('stockList');
+      stockList.innerHTML = '';
+
+      stockData.forEach(stock => {
+        const stockItem = document.createElement('div');
+        stockItem.className = 'stock-item';
+
+        const changeClass = parseFloat(stock.change) >= 0 ? 'positive' : 'negative';
+        const changeSymbol = parseFloat(stock.change) >= 0 ? '+' : '';
+
+        stockItem.innerHTML = `
+                    <span class="stock-symbol">${stock.symbol}</span>
+                    <div>
+                        <div class="stock-price">$${stock.price}</div>
+                        <div class="stock-change ${changeClass}">
+                            ${changeSymbol}${stock.change} (${changeSymbol}${stock.changePercent}%)
+                        </div>
+                    </div>
+                `;
+
+        stockList.appendChild(stockItem);
+      });
+    }
+
+    // Spotify functions
+    function updateSpotifyPlaylist() {
+      const input = document.getElementById('spotifyInput');
+      const url = input.value.trim();
+
+      if (url && url.includes('spotify.com')) {
+        // Convert Spotify URL to embed format
+        let embedUrl = url;
+        if (url.includes('/playlist/')) {
+          embedUrl = url.replace('https://open.spotify.com/playlist/', 'https://open.spotify.com/embed/playlist/');
+          embedUrl = embedUrl.split('?')[0] + '?utm_source=generator';
+        }
+
+        document.getElementById('spotifyIframe').src = embedUrl;
+        localStorage.setItem('spotifyPlaylist', embedUrl);
+        input.value = '';
+      }
+    }
+
+    // Settings functions
+    function openSettings() {
+      document.getElementById('settingsModal').style.display = 'block';
+
+      // Load current settings
+      const savedBg = localStorage.getItem('customBackground');
+      const savedStocks = localStorage.getItem('customStocks');
+
+      if (savedBg) {
+        document.getElementById('backgroundUrl').value = savedBg;
+      }
+      if (savedStocks) {
+        document.getElementById('stockSymbols').value = savedStocks;
+      }
+    }
+
+    function closeSettings() {
+      document.getElementById('settingsModal').style.display = 'none';
+    }
+
+    function updateBackground() {
+      const url = document.getElementById('backgroundUrl').value.trim();
+
+      if (url) {
+        document.body.style.backgroundImage = `url('${url}')`;
+        localStorage.setItem('customBackground', url);
+      } else {
+        document.body.style.backgroundImage = '';
+        localStorage.removeItem('customBackground');
+      }
+
+      closeSettings();
+    }
+
+    function updateStocks() {
+      const symbols = document.getElementById('stockSymbols').value.trim();
+
+      if (symbols) {
+        stockSymbols = symbols.split(',').map(s => s.trim().toUpperCase());
+        localStorage.setItem('customStocks', symbols);
+        loadStocks();
+      }
+
+      closeSettings();
+    }
+
+    function loadSettings() {
+      // Load custom background
+      const savedBg = localStorage.getItem('customBackground');
+      if (savedBg) {
+        document.body.style.backgroundImage = `url('${savedBg}')`;
+      }
+
+      // Load custom stocks
+      const savedStocks = localStorage.getItem('customStocks');
+      if (savedStocks) {
+        stockSymbols = savedStocks.split(',').map(s => s.trim().toUpperCase());
+      }
+
+      // Load custom Spotify playlist
+      const savedSpotify = localStorage.getItem('spotifyPlaylist');
+      if (savedSpotify) {
+        document.getElementById('spotifyIframe').src = savedSpotify;
+      }
+    }
+
+    // Close settings when clicking outside
+    document.getElementById('settingsModal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeSettings();
+      }
+    });
+  </script>
 </body>
+
 </html>

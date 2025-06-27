@@ -1,25 +1,46 @@
 {
   "manifest_version": 3,
-  "name": "NoBoringTab Enhanced",
-  "version": "2.0.0",
-  "description": "Transform your new tab into a productivity dashboard with background images, stock data, and custom Spotify playlists",
+  "name": "NoBoringTab",
+  "version": "1.0.0",
+  "description": "A customizable and elegant new tab page for Google Chrome designed to boost productivity, aesthetic appeal, and daily motivation.",
+  "author": "Anass-NB",
   "permissions": [
     "storage",
+    "tabs",
     "activeTab",
     "https://api.unsplash.com/*",
-    "https://api.polygon.io/*",
-    "https://api.spotify.com/*",
-    "https://open.spotify.com/*"
+    "https://api.openweathermap.org/*",
+    "https://api.github.com/*",
+    "https://api.quotable.io/*",
+    "https://en.wikipedia.org/*",
+    "geolocation"
+  ],
+  "host_permissions": [
+    "https://api.unsplash.com/*",
+    "https://api.openweathermap.org/*",
+    "https://api.github.com/*",
+    "https://api.quotable.io/*",
+    "https://en.wikipedia.org/*"
   ],
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "background": {
+    "service_worker": "scripts/background.js"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://api.unsplash.com https://api.polygon.io https://api.spotify.com https://open.spotify.com https://quotable.io;"
-  }
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*", "styles/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

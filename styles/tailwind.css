@@ -1,0 +1,281 @@
+/* Custom styles for NoBoringTab */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.font-inter {
+    font-family: 'Inter', sans-serif;
+}
+
+.font-poppins {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Glassmorphism effect */
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Timer circle animation */
+@keyframes timer {
+    from {
+        stroke-dashoffset: 283;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.timer-circle {
+    animation: timer linear;
+}
+
+/* Hover effects */
+.hover-lift:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Focus mode styles */
+.focus-mode {
+    filter: blur(5px);
+    pointer-events: none;
+    transition: filter 0.3s ease;
+}
+
+.focus-mode.active {
+    filter: none;
+    pointer-events: auto;
+}
+
+/* GitHub contribution graph styles */
+.contrib-square {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    margin: 1px;
+    display: inline-block;
+}
+
+.contrib-0 { background-color: rgba(255, 255, 255, 0.1); }
+.contrib-1 { background-color: rgba(34, 197, 94, 0.3); }
+.contrib-2 { background-color: rgba(34, 197, 94, 0.5); }
+.contrib-3 { background-color: rgba(34, 197, 94, 0.7); }
+.contrib-4 { background-color: rgba(34, 197, 94, 0.9); }
+
+/* Todo item styles */
+.todo-item {
+    transition: all 0.3s ease;
+}
+
+.todo-item.completed {
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+
+.todo-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+/* Weather widget animations */
+.weather-icon {
+    animation: pulse 3s infinite;
+}
+
+/* Quote box styles */
+blockquote {
+    position: relative;
+}
+
+blockquote::before {
+    content: '"';
+    font-size: 4rem;
+    position: absolute;
+    left: -20px;
+    top: -10px;
+    opacity: 0.3;
+}
+
+/* Time tracking chart */
+.time-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+    transition: width 0.5s ease;
+}
+
+/* Journal textarea */
+#journal-entry {
+    resize: none;
+    line-height: 1.5;
+}
+
+#journal-entry:focus {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Ambient sound controls */
+.sound-playing {
+    background: rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Modal animations */
+.modal-enter {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.modal-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Custom button styles */
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Loading skeleton */
+.skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 100%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Error state */
+.error-state {
+    color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.875rem;
+}
+
+/* Success state */
+.success-state {
+    color: #22c55e;
+    background-color: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.875rem;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .grid-cols-12 {
+        grid-template-columns: 1fr;
+    }
+    
+    .col-span-3,
+    .col-span-6 {
+        grid-column: span 1;
+    }
+    
+    #greeting h1 {
+        font-size: 2rem;
+    }
+    
+    #clock {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .p-6 {
+        padding: 1rem;
+    }
+    
+    .gap-6 {
+        gap: 1rem;
+    }
+    
+    #greeting h1 {
+        font-size: 1.5rem;
+    }
+    
+    #clock {
+        font-size: 2rem;
+    }
+    
+    .text-6xl {
+        font-size: 2rem;
+    }
+    
+    .text-4xl {
+        font-size: 1.5rem;
+    }
+}

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoBoringTab</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/tailwind.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 text-white overflow-hidden font-inter">
+    <!-- Background overlay -->
+    <div id="background-overlay" class="fixed inset-0 bg-black bg-opacity-30 z-0"></div>
+    
+    <!-- Main Content -->
+    <div class="relative z-10 min-h-screen p-6">
+        <!-- Top Bar -->
+        <div class="flex justify-between items-center mb-8">
+            <!-- Greeting & Clock -->
+            <div id="greeting-section" class="text-left">
+                <h1 id="greeting" class="text-4xl font-bold mb-2">Good Morning!</h1>
+                <div id="clock" class="text-6xl font-light font-poppins">12:00 PM</div>
+            </div>
+            
+            <!-- Weather Widget -->
+            <div id="weather-widget" class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-4 min-w-64">
+                <div class="flex items-center space-x-3">
+                    <div id="weather-icon" class="text-2xl">☀️</div>
+                    <div>
+                        <div id="weather-temp" class="text-xl font-semibold">--°</div>
+                        <div id="weather-location" class="text-sm opacity-80">Loading...</div>
+                        <div id="weather-description" class="text-sm opacity-70">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="grid grid-cols-12 gap-6 h-auto">
+            <!-- Left Column -->
+            <div class="col-span-3 space-y-6">
+                <!-- Quick Access Dashboard -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-bookmark mr-2"></i>
+                        Quick Access
+                    </h3>
+                    <div id="quick-access" class="space-y-3">
+                        <!-- Quick access links will be populated here -->
+                    </div>
+                    <button id="add-quick-access" class="mt-4 w-full py-2 px-4 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-200">
+                        <i class="fas fa-plus mr-2"></i>Add Link
+                    </button>
+                </div>
+
+                <!-- Daily Goals Tracker -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-target mr-2"></i>
+                        Daily Goals
+                    </h3>
+                    <div id="daily-goals" class="space-y-3">
+                        <!-- Daily goals will be populated here -->
+                    </div>
+                    <button id="add-goal" class="mt-4 w-full py-2 px-4 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-200">
+                        <i class="fas fa-plus mr-2"></i>Add Goal
+                    </button>
+                </div>
+            </div>
+
+            <!-- Center Column -->
+            <div class="col-span-6 space-y-6">
+                <!-- Daily Quote -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-8 text-center">
+                    <div id="quote-container">
+                        <blockquote id="daily-quote" class="text-xl font-medium mb-4 italic">
+                            "Loading inspirational quote..."
+                        </blockquote>
+                        <cite id="quote-author" class="text-sm opacity-80">— Loading...</cite>
+                    </div>
+                    <button id="new-quote" class="mt-4 px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-200">
+                        <i class="fas fa-refresh mr-2"></i>New Quote
+                    </button>
+                </div>
+
+                <!-- To-Do List -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center justify-between">
+                        <span><i class="fas fa-list-check mr-2"></i>To-Do List</span>
+                        <span id="todo-counter" class="text-sm opacity-70">0 tasks</span>
+                    </h3>
+                    <div class="flex mb-4">
+                        <input id="todo-input" type="text" placeholder="Add a new task..." 
+                               class="flex-1 px-4 py-2 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 placeholder-white placeholder-opacity-70">
+                        <button id="add-todo" class="px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-r-lg transition-colors duration-200">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="todo-list" class="space-y-2 max-h-60 overflow-y-auto">
+                        <!-- To-do items will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Today I Learned -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        Today I Learned
+                    </h3>
+                    <div id="til-content" class="mb-4">
+                        <p id="til-fact" class="text-sm leading-relaxed">Loading interesting fact...</p>
+                    </div>
+                    <button id="new-fact" class="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-200">
+                        <i class="fas fa-refresh mr-2"></i>New Fact
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-span-3 space-y-6">
+                <!-- Pomodoro Timer -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6 text-center">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center justify-center">
+                        <i class="fas fa-clock mr-2"></i>
+                        Pomodoro Timer
+                    </h3>
+                    <div id="timer-display" class="text-3xl font-bold mb-4 font-mono">25:00</div>
+                    <div id="timer-status" class="text-sm opacity-80 mb-4">Work Time</div>
+                    <div class="flex space-x-2 justify-center">
+                        <button id="timer-start" class="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg transition-colors duration-200">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button id="timer-pause" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg transition-colors duration-200">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button id="timer-reset" class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-200">
+                            <i class="fas fa-stop"></i>
+                        </button>
+                    </div>
+                    <div class="mt-4 text-xs opacity-70">
+                        <span id="pomodoro-count">0</span> Pomodoros completed today
+                    </div>
+                </div>
+
+                <!-- GitHub Activity -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fab fa-github mr-2"></i>
+                        GitHub Activity
+                    </h3>
+                    <div id="github-stats" class="space-y-3">
+                        <input id="github-username" type="text" placeholder="Enter GitHub username" 
+                               class="w-full px-3 py-2 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 placeholder-white placeholder-opacity-70 text-sm">
+                        <div id="github-contributions" class="text-sm">
+                            <!-- GitHub stats will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Tracking -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-chart-pie mr-2"></i>
+                        Time Today
+                    </h3>
+                    <div id="time-stats" class="space-y-2">
+                        <!-- Time tracking stats will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Journaling Prompt -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-pen-fancy mr-2"></i>
+                        Daily Journal
+                    </h3>
+                    <div id="journal-prompt" class="text-sm mb-3 opacity-80">
+                        Loading prompt...
+                    </div>
+                    <textarea id="journal-entry" placeholder="Write your thoughts..." 
+                              class="w-full h-20 px-3 py-2 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 placeholder-white placeholder-opacity-70 text-sm resize-none"></textarea>
+                    <button id="save-journal" class="mt-2 w-full py-2 px-4 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-200 text-sm">
+                        Save Entry
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="fixed bottom-4 left-4 right-4 flex justify-between items-center">
+            <!-- Ambient Sound Player -->
+            <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-full px-6 py-3 flex items-center space-x-4">
+                <i class="fas fa-music"></i>
+                <select id="ambient-sound" class="bg-transparent text-white focus:outline-none">
+                    <option value="none">No Sound</option>
+                    <option value="rain">Rain</option>
+                    <option value="forest">Forest</option>
+                    <option value="ocean">Ocean Waves</option>
+                    <option value="cafe">Coffee Shop</option>
+                </select>
+                <button id="sound-toggle" class="px-3 py-1 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-200">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+
+            <!-- Settings & Focus Mode -->
+            <div class="flex space-x-3">
+                <button id="focus-mode" class="bg-white bg-opacity-10 backdrop-blur-md rounded-full p-3 hover:bg-opacity-20 transition-all duration-200">
+                    <i class="fas fa-eye-slash"></i>
+                </button>
+                <button id="settings-btn" class="bg-white bg-opacity-10 backdrop-blur-md rounded-full p-3 hover:bg-opacity-20 transition-all duration-200">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-8 max-w-md w-full">
+                <h2 class="text-2xl font-bold mb-6">Settings</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Background Source</label>
+                        <select id="bg-source" class="w-full px-3 py-2 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50">
+                            <option value="unsplash">Unsplash Daily</option>
+                            <option value="gradient">Gradient</option>
+                            <option value="solid">Solid Color</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Your Name</label>
+                        <input id="user-name" type="text" placeholder="Enter your name" 
+                               class="w-full px-3 py-2 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 placeholder-white placeholder-opacity-70">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Weather Location</label>
+                        <input id="weather-location-input" type="text" placeholder="City name or 'auto' for geolocation" 
+                               class="w-full px-3 py-2 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 placeholder-white placeholder-opacity-70">
+                    </div>
+                </div>
+                <div class="flex space-x-3 mt-8">
+                    <button id="save-settings" class="flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors duration-200">
+                        Save
+                    </button>
+                    <button id="close-settings" class="flex-1 py-2 px-4 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-200">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Modal -->
+    <div id="quick-access-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-8 max-w-md w-full">
+                <h2 class="text-xl font-bold mb-4">Add Quick Access Link</h2>
+                <div class="space-y-4">
+                    <input id="link-name" type="text" placeholder="Link Name" 
+                           class="w-full px-3 py-2 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 placeholder-white placeholder-opacity-70">
+                    <input id="link-url" type="url" placeholder="https://example.com" 
+                           class="w-full px-3 py-2 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 placeholder-white placeholder-opacity-70">
+                </div>
+                <div class="flex space-x-3 mt-6">
+                    <button id="save-link" class="flex-1 py-2 px-4 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors duration-200">
+                        Add Link
+                    </button>
+                    <button id="cancel-link" class="flex-1 py-2 px-4 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-200">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/background.js"></script>
+    <script src="scripts/todo.js"></script>
+    <script src="scripts/timer.js"></script>
+    <script src="components/Clock.js"></script>
+    <script src="components/Weather.js"></script>
+    <script src="components/QuoteBox.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
